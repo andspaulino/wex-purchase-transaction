@@ -6,6 +6,7 @@ import com.wex.purchase.transaction.wexpurchasetransaction.service.WexPurchaseTr
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/")
@@ -35,12 +35,13 @@ public class WexPurchaseTransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("retrieve-purchase-transaction/")
-    public ResponseEntity<List<RetrievedPurchaseTransactionDto>> retrievePurchaseTransaction(
+    @GetMapping("retrieve-purchase-transaction/{id}")
+    public ResponseEntity<RetrievedPurchaseTransactionDto> retrievePurchaseTransaction(
+            @PathVariable(name = "id") Long id,
             @RequestParam(name = "country", required = false) String country
     ) {
-        List<RetrievedPurchaseTransactionDto> purchaseTransactions =
-                this.wexPurchaseTransactionService.retrievePurchaseTransaction(country);
+        RetrievedPurchaseTransactionDto purchaseTransactions =
+                this.wexPurchaseTransactionService.retrievePurchaseTransaction(id, country);
         return ResponseEntity.status(HttpStatus.OK).body(purchaseTransactions);
     }
 
