@@ -1,5 +1,6 @@
 package com.wex.purchase.transaction.wexpurchasetransaction.model;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,21 +8,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "transactions")
 public class PurchaseTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
-    @Column(name = "amount", nullable = false, precision = 10, scale = 2)
+    @Column(name = "amount")
     private BigDecimal amount;
-    @Column(name = "description", nullable = false, length = 50)
+    @Column(name = "description")
     private String description;
-    @Column(name = "transaction_date", nullable = false)
-    private Instant transactionDate;
+    @Column(name = "transaction_date")
+    private LocalDate transactionDate;
 
     public Long getId() {
         return id;
@@ -47,11 +47,11 @@ public class PurchaseTransaction {
         this.description = description;
     }
 
-    public Instant getTransactionDate() {
+    public LocalDate getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(Instant transactionDate) {
+    public void setTransactionDate(LocalDate transactionDate) {
         this.transactionDate = transactionDate;
     }
 
