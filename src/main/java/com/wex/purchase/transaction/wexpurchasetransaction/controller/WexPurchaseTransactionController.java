@@ -4,6 +4,7 @@ import com.wex.purchase.transaction.wexpurchasetransaction.dto.PurchaseTransacti
 import com.wex.purchase.transaction.wexpurchasetransaction.dto.RetrievedPurchaseTransactionDto;
 import com.wex.purchase.transaction.wexpurchasetransaction.service.WexPurchaseTransactionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +41,14 @@ public class WexPurchaseTransactionController {
             @PathVariable(name = "id") Long id,
             @RequestParam(name = "country", required = false) String country
     ) {
-        RetrievedPurchaseTransactionDto purchaseTransactions =
-                this.wexPurchaseTransactionService.retrievePurchaseTransaction(id, country);
-        return ResponseEntity.status(HttpStatus.OK).body(purchaseTransactions);
+        return this.wexPurchaseTransactionService.retrievePurchaseTransaction(id, country)
+                .map((RetrievedPurchaseTransactionDto retrievedPurchaseTransactionDto) ->
+                    ResponseEntity
+                            .status(HttpStatus.OK)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(retrievedPurchaseTransactionDto)
+                )
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
 

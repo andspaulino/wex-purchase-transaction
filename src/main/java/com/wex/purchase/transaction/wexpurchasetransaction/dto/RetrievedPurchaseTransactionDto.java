@@ -1,19 +1,23 @@
 package com.wex.purchase.transaction.wexpurchasetransaction.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@AllArgsConstructor
+@Builder(
+        builderClassName = "Builder",
+        builderMethodName = "Builder",
+        toBuilder = true
+)
 @Getter
 public class RetrievedPurchaseTransactionDto implements Serializable {
-    private final Long id;
-    private final String description;
-    private final LocalDate transactionDate;
-    private final BigDecimal originalAmount;
-    private final BigDecimal exchangeRate;
-    private final BigDecimal convertedAmount;
+    private Long id;
+    private String description;
+    private LocalDate transactionDate;
+    private BigDecimal originalAmount;
+    private BigDecimal exchangeRate;
+    private BigDecimal convertedAmount;
 }

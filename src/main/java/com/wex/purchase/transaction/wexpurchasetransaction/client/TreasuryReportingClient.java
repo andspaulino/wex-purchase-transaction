@@ -1,32 +1,39 @@
 package com.wex.purchase.transaction.wexpurchasetransaction.client;
 
 import com.wex.purchase.transaction.wexpurchasetransaction.dto.TreasuryReportingResponseDto;
+import com.wex.purchase.transaction.wexpurchasetransaction.exception.TreasuryReportingException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Component
 public class TreasuryReportingClient {
-    private final String TREASURY_GOV_BASE_URL = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/rates_of_exchange";
+
+    @Value("${treasury.rates.of.exchange.url}")
+    private String url;
     private final RestTemplate restTemplate;
 
     public TreasuryReportingClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity<TreasuryReportingResponseDto> callForExchangeRate(String country, LocalDate date) {
+    public TreasuryReportingResponseDto callForExchangeRate(String country, LocalDate date) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         HttpEntity<String> objectHttpEntity = new HttpEntity<>(headers);
 
-        URI uri = UriComponentsBuilder.fromUriString(TREASURY_GOV_BASE_URL)
+        URI uri = UriComponentsBuilder.fromUriString(this.url)
                 .queryParam("fields", "record_date,exchange_rate")
                 .queryParam(
                         "filter",
@@ -42,8 +49,29 @@ public class TreasuryReportingClient {
                 .build(false)
                 .toUri();
 
-        return this.restTemplate.exchange(uri, HttpMethod.GET, objectHttpEntity, TreasuryReportingResponseDto.class);
-    }
+        ResponseEntity<TreasuryReportingResponseDto> exchange = null;
 
+        try {
+            exchange = this.restTemplate
+                    .exchange(uri, HttpMethod.GET, objectHttpEntity, TreasuryReportingResponseDto.class);
+        } catch (HttpStatusCodeException e) {
+            throw new TreasuryReportingException(
+                    "Error occurred while trying to call for exchange rate",
+                    e
+            );
+        }
+
+        TreasuryReportingResponseDto body = exchange.getBody();
+
+        if (Objects.isNull(body)) {
+            throw new TreasuryReportingException("No body has returned", new NoSuchElementException());
+        }
+
+        if(Objects.isNull(body.getData())) {
+            throw new TreasuryReportingException("No data has returned", new NoSuchElementException());
+        }
+
+        return body;
+    }
 
 }
