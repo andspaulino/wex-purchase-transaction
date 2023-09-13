@@ -40,7 +40,7 @@ Before you begin, make sure you have the following installed:
 
    - **POST** /api/v1/purchase-transactions/store: Store a purchase transaction.
 
-   - **GET** /api/v1/purchase-transactions/retrieve/{id}/{country}: Retrieve a purchase transaction by its ID and a Specified Country’s Currency.
+   - **GET** /api/v1/purchase-transactions/retrieve/{id}/{country}: Retrieve a purchase transaction by its ID and a country.
 
 ## Swagger Documentation
    For more detailed information about these endpoints and interactive testing, you can explore the Swagger documentation by running the application and accessing the following URL:
