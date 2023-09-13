@@ -9,7 +9,6 @@ import com.wex.purchase.transaction.wexpurchasetransaction.model.PurchaseTransac
 import com.wex.purchase.transaction.wexpurchasetransaction.repository.PurchaseTransactionRepository;
 import com.wex.purchase.transaction.wexpurchasetransaction.service.PurchaseTransactionService;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,7 +26,6 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -48,11 +46,6 @@ class PurchaseTransactionControllerTest {
 
     @MockBean
     TreasuryReportingClient treasuryReportingClient;
-
-    @AfterEach
-    void setUp() {
-
-    }
 
     @AfterEach
     void tearDown() {

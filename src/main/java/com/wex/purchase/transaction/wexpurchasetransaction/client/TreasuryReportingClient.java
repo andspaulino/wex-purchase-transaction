@@ -55,7 +55,7 @@ public class TreasuryReportingClient {
                     .exchange(uri, HttpMethod.GET, objectHttpEntity, TreasuryReportingResponseDto.class);
         } catch (HttpStatusCodeException e) {
             throw new TreasuryReportingException(
-                    "Error occurred while trying to call for exchange rate",
+                    "Error occurred while trying to call for exchange rate.",
                     e
             );
         }
@@ -63,11 +63,17 @@ public class TreasuryReportingClient {
         TreasuryReportingResponseDto body = exchange.getBody();
 
         if (Objects.isNull(body)) {
-            throw new TreasuryReportingException("No body has returned", new NoSuchElementException());
+            throw new TreasuryReportingException(
+                    "No body has returned when Treasury Reporting was called.",
+                    new NoSuchElementException()
+            );
         }
 
         if(Objects.isNull(body.getData()) || body.getData().isEmpty()) {
-            throw new TreasuryReportingException("No data has returned", new NoSuchElementException());
+            throw new TreasuryReportingException(
+                    "No ExchangeRate has returned when Treasury Reporting was called.",
+                    new NoSuchElementException()
+            );
         }
 
         return body;

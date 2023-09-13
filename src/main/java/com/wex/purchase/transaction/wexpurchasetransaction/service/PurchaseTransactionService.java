@@ -29,7 +29,7 @@ public class PurchaseTransactionService {
 
     public void insertPurchaseTransaction(PurchaseTransactionDto purchaseTransactionDto) {
         PurchaseTransaction transaction = new PurchaseTransaction();
-        transaction.setAmount(purchaseTransactionDto.getAmount());
+        transaction.setAmount(purchaseTransactionDto.getAmount().setScale(2, RoundingMode.HALF_EVEN));
         transaction.setDescription(purchaseTransactionDto.getDescription());
         transaction.setTransactionDate(purchaseTransactionDto.getTransactionDate());
 
