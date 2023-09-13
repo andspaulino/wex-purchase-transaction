@@ -19,7 +19,6 @@ import java.util.Objects;
 
 @Component
 public class TreasuryReportingClient {
-
     @Value("${treasury.rates.of.exchange.url}")
     private String url;
     private final RestTemplate restTemplate;
@@ -34,7 +33,7 @@ public class TreasuryReportingClient {
         HttpEntity<String> objectHttpEntity = new HttpEntity<>(headers);
 
         URI uri = UriComponentsBuilder.fromUriString(this.url)
-                .queryParam("fields", "record_date,exchange_rate")
+                .queryParam("fields", "exchange_rate")
                 .queryParam(
                         "filter",
                         String.format(
@@ -67,7 +66,7 @@ public class TreasuryReportingClient {
             throw new TreasuryReportingException("No body has returned", new NoSuchElementException());
         }
 
-        if(Objects.isNull(body.getData())) {
+        if(Objects.isNull(body.getData()) || body.getData().isEmpty()) {
             throw new TreasuryReportingException("No data has returned", new NoSuchElementException());
         }
 
