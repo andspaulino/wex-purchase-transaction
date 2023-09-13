@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class PurchaseTransactionDto implements Serializable {
     @NotNull(message = "should not be null.")
     @DecimalMin(value = "0.0", inclusive = false, message = "value must be higher than 0.0")
-    @Digits(integer = 7, fraction = 2, message = "must have a maximum of 7 integer and maximum of 2 decimal digits.")
+    @Digits(integer = 15, fraction = 2, message = "must have a maximum of 15 integer and maximum of 2 decimal digits.")
     private final BigDecimal amount;
     @Size(max = 50, message = "max length should be 50 characters.")
     private final String description;

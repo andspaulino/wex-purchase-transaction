@@ -8,55 +8,57 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpStatusCodeException;
 
-import java.time.format.DateTimeParseException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 public class ControllerAdvisor {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
             MethodArgumentNotValidException ex
     ) {
-        Map<String, String> errors = new HashMap<>();
+        Map<String, Object> error = new LinkedHashMap<>();
+        Map<String, String> errors = new LinkedHashMap<>();
+        error.put("statusCode", HttpStatus.BAD_REQUEST.value());
+        error.put("errorMessage", "Error occurred while trying to validade fields.");
 
         ex.getBindingResult()
                 .getAllErrors()
-                .forEach((ObjectError error) -> {
-                    String fieldName = ((FieldError) error).getField();
-                    String errorMessage = error.getDefaultMessage();
+                .forEach((ObjectError objectError) -> {
+                    String fieldName = ((FieldError) objectError).getField();
+                    String errorMessage = objectError.getDefaultMessage();
                     errors.put(fieldName, errorMessage);
                 });
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
+        error.put("validationErrors", errors);
 
-    @ExceptionHandler(DateTimeParseException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(
-            DateTimeParseException ex
-    ) {
-        Map<String, String> errors = new HashMap<>();
-        String fieldName = "transactionDate";
-        String errorMessage = "could not parse " + ex.getParsedString() + ". Try use yyyy-MM-dd format.";
-        errors.put(fieldName, errorMessage);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(TreasuryReportingException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
             TreasuryReportingException ex
     ) {
-        Map<String, String> errors = new HashMap<>();
-        String fieldMessage = "message";
-        String message = ex.getMessage();
-        String fieldCause = "cause";
-        String cause = String.valueOf(ex.getCause());
-        errors.put(fieldMessage, message);
-        errors.put(fieldCause, cause);
+        Map<String, Object> errors = new LinkedHashMap<>();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        if(ex.getCause() instanceof HttpStatusCodeException) {
+            HttpStatusCodeException cause = (HttpStatusCodeException) ex.getCause();
+            errors.put("statusCode", cause.getStatusCode().value());
+            errors.put("errorMessage", ex.getMessage());
+            errors.put("errorResponseBody", cause.getResponseBodyAsString());
+
+            httpStatus = cause.getStatusCode();
+        } else {
+            errors.put("statusCode", httpStatus.value());
+            errors.put("errorMessage", ex.getMessage());
+        }
+
+        return ResponseEntity.status(httpStatus).body(errors);
     }
 }

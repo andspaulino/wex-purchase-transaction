@@ -33,7 +33,7 @@ public class TreasuryReportingClient {
         HttpEntity<String> objectHttpEntity = new HttpEntity<>(headers);
 
         URI uri = UriComponentsBuilder.fromUriString(this.url)
-                .queryParam("fields", "exchange_rate")
+                .queryParam("fields", "record_date, exchange_rate")
                 .queryParam(
                         "filter",
                         String.format(
