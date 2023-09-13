@@ -4,7 +4,7 @@ import com.wex.purchase.transaction.wexpurchasetransaction.client.TreasuryReport
 import com.wex.purchase.transaction.wexpurchasetransaction.dto.TreasuryReportingResponseData;
 import com.wex.purchase.transaction.wexpurchasetransaction.dto.TreasuryReportingResponseDto;
 import com.wex.purchase.transaction.wexpurchasetransaction.model.PurchaseTransaction;
-import com.wex.purchase.transaction.wexpurchasetransaction.repository.WexPurchaseTransactionRepository;
+import com.wex.purchase.transaction.wexpurchasetransaction.repository.PurchaseTransactionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,14 +24,14 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class WexPurchaseTransactionServiceTest {
+class PurchaseTransactionServiceTest {
     AutoCloseable autoCloseable;
-    WexPurchaseTransactionRepository wexPurchaseTransactionRepository = mock(WexPurchaseTransactionRepository.class);
+    PurchaseTransactionRepository purchaseTransactionRepository = mock(PurchaseTransactionRepository.class);
     TreasuryReportingClient treasuryReportingClient = mock(TreasuryReportingClient.class);
 
-    WexPurchaseTransactionService wexPurchaseTransactionService = spy(
-            new WexPurchaseTransactionService(
-                    this.wexPurchaseTransactionRepository,
+    PurchaseTransactionService purchaseTransactionService = spy(
+            new PurchaseTransactionService(
+                    this.purchaseTransactionRepository,
                     this.treasuryReportingClient
             )
     );
@@ -60,16 +60,16 @@ class WexPurchaseTransactionServiceTest {
         treasuryReportingResponseDto.setData(Collections.singletonList(treasuryReportingResponseData));
 
         doReturn(Optional.of(purchaseTransaction))
-                .when(this.wexPurchaseTransactionRepository)
+                .when(this.purchaseTransactionRepository)
                 .findById(anyLong());
 
         doReturn(treasuryReportingResponseDto)
                 .when(this.treasuryReportingClient)
                 .callForExchangeRate(anyString(), any(LocalDate.class));
 
-        this.wexPurchaseTransactionService.retrievePurchaseTransaction(1L, "Brazil");
+        this.purchaseTransactionService.retrievePurchaseTransaction(1L, "Brazil");
 
-        verify(this.wexPurchaseTransactionRepository, times(1))
+        verify(this.purchaseTransactionRepository, times(1))
                 .findById(anyLong());
 
         verify(this.treasuryReportingClient, times(1))

@@ -2,7 +2,9 @@ package com.wex.purchase.transaction.wexpurchasetransaction.controller;
 
 import com.wex.purchase.transaction.wexpurchasetransaction.dto.PurchaseTransactionDto;
 import com.wex.purchase.transaction.wexpurchasetransaction.dto.RetrievedPurchaseTransactionDto;
-import com.wex.purchase.transaction.wexpurchasetransaction.service.WexPurchaseTransactionService;
+import com.wex.purchase.transaction.wexpurchasetransaction.service.PurchaseTransactionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,31 +19,33 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/")
-public class WexPurchaseTransactionController {
-    private final WexPurchaseTransactionService wexPurchaseTransactionService;
+@RequestMapping("/api/v1/purchase-transactions")
+@Tag(name = "Purchase Transaction", description = "APIs for integrating purchase transactions")
+public class PurchaseTransactionController {
+    private final PurchaseTransactionService purchaseTransactionService;
 
-    public WexPurchaseTransactionController(
-            WexPurchaseTransactionService wexPurchaseTransactionService
+    public PurchaseTransactionController(
+            PurchaseTransactionService purchaseTransactionService
     ) {
-        this.wexPurchaseTransactionService = wexPurchaseTransactionService;
+        this.purchaseTransactionService = purchaseTransactionService;
     }
 
-    @PostMapping("store-purchase-transaction/")
+    @PostMapping("/store")
+    @Operation(summary = "Store a purchase transaction")
     public ResponseEntity<Void> storePurchaseTransaction(
             @Valid @RequestBody PurchaseTransactionDto purchaseTransactionDto
     ) {
-        this.wexPurchaseTransactionService.insertPurchaseTransaction(purchaseTransactionDto);
-
+        this.purchaseTransactionService.insertPurchaseTransaction(purchaseTransactionDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("retrieve-purchase-transaction/{id}")
+    @GetMapping("/retrieve/{id}")
+    @Operation(summary = "Retrieve a purchase transaction")
     public ResponseEntity<RetrievedPurchaseTransactionDto> retrievePurchaseTransaction(
             @PathVariable(name = "id") Long id,
             @RequestParam(name = "country", required = false) String country
     ) {
-        return this.wexPurchaseTransactionService.retrievePurchaseTransaction(id, country)
+        return this.purchaseTransactionService.retrievePurchaseTransaction(id, country)
                 .map((RetrievedPurchaseTransactionDto retrievedPurchaseTransactionDto) ->
                     ResponseEntity
                             .status(HttpStatus.OK)

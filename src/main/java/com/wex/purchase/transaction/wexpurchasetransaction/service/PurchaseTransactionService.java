@@ -6,7 +6,7 @@ import com.wex.purchase.transaction.wexpurchasetransaction.dto.RetrievedPurchase
 import com.wex.purchase.transaction.wexpurchasetransaction.dto.TreasuryReportingResponseData;
 import com.wex.purchase.transaction.wexpurchasetransaction.exception.TreasuryReportingException;
 import com.wex.purchase.transaction.wexpurchasetransaction.model.PurchaseTransaction;
-import com.wex.purchase.transaction.wexpurchasetransaction.repository.WexPurchaseTransactionRepository;
+import com.wex.purchase.transaction.wexpurchasetransaction.repository.PurchaseTransactionRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,15 +15,15 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
-public class WexPurchaseTransactionService {
-    private final WexPurchaseTransactionRepository wexPurchaseTransactionRepository;
+public class PurchaseTransactionService {
+    private final PurchaseTransactionRepository purchaseTransactionRepository;
     private final TreasuryReportingClient treasuryReportingClient;
 
-    public WexPurchaseTransactionService(
-            WexPurchaseTransactionRepository wexPurchaseTransactionRepository,
+    public PurchaseTransactionService(
+            PurchaseTransactionRepository purchaseTransactionRepository,
             TreasuryReportingClient treasuryReportingClient
     ) {
-        this.wexPurchaseTransactionRepository = wexPurchaseTransactionRepository;
+        this.purchaseTransactionRepository = purchaseTransactionRepository;
         this.treasuryReportingClient = treasuryReportingClient;
     }
 
@@ -33,11 +33,11 @@ public class WexPurchaseTransactionService {
         transaction.setDescription(purchaseTransactionDto.getDescription());
         transaction.setTransactionDate(purchaseTransactionDto.getTransactionDate());
 
-        this.wexPurchaseTransactionRepository.save(transaction);
+        this.purchaseTransactionRepository.save(transaction);
     }
 
     public Optional<RetrievedPurchaseTransactionDto> retrievePurchaseTransaction(Long id, String country) {
-        return this.wexPurchaseTransactionRepository.findById(id)
+        return this.purchaseTransactionRepository.findById(id)
                 .map((PurchaseTransaction purchaseTransaction) ->
                         RetrievedPurchaseTransactionDto.Builder()
                                 .id(purchaseTransaction.getId())
