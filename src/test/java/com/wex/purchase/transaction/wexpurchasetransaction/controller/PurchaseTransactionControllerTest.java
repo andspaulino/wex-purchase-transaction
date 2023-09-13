@@ -94,8 +94,7 @@ class PurchaseTransactionControllerTest {
         when(this.treasuryReportingClient.callForExchangeRate(anyString(), any(LocalDate.class)))
                 .thenReturn(treasuryReportingResponseDto);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/purchase-transactions/retrieve/{id}", 1L)
-                        .param("country", "Brazil")
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/purchase-transactions/retrieve/{id}/{country}", 1L, "Brazil")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -104,8 +103,7 @@ class PurchaseTransactionControllerTest {
 
     @Test
     void testRetrievePurchaseTransaction1() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/purchase-transactions/retrieve/{id}", 1L)
-                        .param("country", "Brazil")
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/purchase-transactions/retrieve/{id}/{country}", 1L, "Brazil")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());;

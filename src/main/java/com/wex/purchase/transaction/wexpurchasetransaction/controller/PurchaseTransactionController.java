@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -39,11 +38,11 @@ public class PurchaseTransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/retrieve/{id}")
+    @GetMapping("/retrieve/{id}/{country}")
     @Operation(summary = "Retrieve a purchase transaction")
     public ResponseEntity<RetrievedPurchaseTransactionDto> retrievePurchaseTransaction(
             @PathVariable(name = "id") Long id,
-            @RequestParam(name = "country", required = false) String country
+            @PathVariable(name = "country") String country
     ) {
         return this.purchaseTransactionService.retrievePurchaseTransaction(id, country)
                 .map((RetrievedPurchaseTransactionDto retrievedPurchaseTransactionDto) ->
