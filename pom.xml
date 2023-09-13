@@ -133,6 +133,11 @@
 						</configuration>
 					</execution>
 				</executions>
+				<configuration>
+					<excludes>
+						<exclude>**/WexPurchaseTransactionApplication.class</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 
 		</plugins>
