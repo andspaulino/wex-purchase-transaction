@@ -135,6 +135,7 @@
 				</executions>
 				<configuration>
 					<excludes>
+						<exclude>**/ControllerAdvisor.class</exclude>
 						<exclude>**/WexPurchaseTransactionApplication.class</exclude>
 					</excludes>
 				</configuration>
